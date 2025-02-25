@@ -1,0 +1,32 @@
+# dir: /
+FROM ubuntu:22.04
+
+RUN apt-get update
+RUN apt-get install wget -y
+RUN apt-get install libicu-dev -y
+RUN apt-get install unzip -y
+
+WORKDIR /root
+RUN wget "https://aka.ms/dotnet/10.0.1xx-preview2/daily/dotnet-sdk-linux-x64.tar.gz" -O "dotnet-sdk.tar.gz"
+RUN mkdir -p .dotnet
+RUN tar -zxvf "dotnet-sdk.tar.gz" -C ".dotnet"
+RUN rm "dotnet-sdk.tar.gz"
+
+COPY "./WebApp.Server.zip" "/root"
+RUN unzip "WebApp.Server.zip" -d "WebApp.Server"
+RUN rm "WebApp.Server.zip"
+
+ENV DOTNET_ROOT="/root/.dotnet"
+ENV PATH="$PATH:/root/.dotnet:/root/.dotnet/tools"
+
+WORKDIR "/root/WebApp.Server/"
+RUN rm .env
+
+ENV DOTNET_ROLL_FORWARD=LatestMajor
+ENV DOTNET_Urls=http://*:5000
+
+EXPOSE 5000
+
+# link .env
+
+ENTRYPOINT [ "dotnet", "SharpLab.WebApp.Server.dll" ]

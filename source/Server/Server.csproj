@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
@@ -13,12 +13,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="..\Native.Profiler\x64\$(Configuration)\SharpLab.Native.Profiler.dll" Link="SharpLab.Native.Profiler.dll" Condition="Exists('..\Native.Profiler\x64\$(Configuration)\SharpLab.Native.Profiler.dll')">
+    <!--<None Include="..\Native.Profiler\x64\$(Configuration)\SharpLab.Native.Profiler.dll" Link="SharpLab.Native.Profiler.dll" Condition="Exists('..\Native.Profiler\x64\$(Configuration)\SharpLab.Native.Profiler.dll')">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="..\Native.Profiler\x64\$(Configuration)\SharpLab.Native.Profiler.pdb" Link="SharpLab.Native.Profiler.pdb" Condition="Exists('..\Native.Profiler\x64\$(Configuration)\SharpLab.Native.Profiler.pdb')">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    </None>-->
     <None Include="..\WebApp.Server\.env" Link=".env" Condition="Exists('..\WebApp.Server\.env')">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -31,18 +31,18 @@
     <PackageReference Include="Autofac" Version="4.9.2" />
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="5.0.0" />
     <PackageReference Include="Autofac.Extras.FileSystemRegistration" Version="1.0.0-pre-03" />
-    <PackageReference Include="Azure.Identity" Version="1.13.1" />
+    <PackageReference Include="Azure.Identity" Version="1.13.2" />
     <PackageReference Include="Azure.Security.KeyVault.Secrets" Version="4.1.0" />
     <PackageReference Include="Azure.Storage.Blobs" Version="12.19.1" />
+    <!--<PackageReference Include="FSharp.Compiler.Service" Version="43.9.201" />-->
+    <!--<PackageReference Include="FSharp.Core" Version="9.0.201" />-->
     <PackageReference Include="ICSharpCode.Decompiler" Version="7.1.0.6543" />
     <PackageReference Include="JetBrains.Annotations" Version="10.4.0" />
     <PackageReference Include="Microsoft.ApplicationInsights" Version="2.17.0" />
     <PackageReference Include="Microsoft.Azure.Cosmos.Table" Version="1.0.8" />
-    <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.12.0-3.final" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" Version="4.12.0-3.final" />
     <PackageReference Include="Microsoft.CodeAnalysis.VisualBasic.Features" Version="4.12.0-3.final" />
     <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="4.12.0-3.final" />
-    <PackageReference Include="Microsoft.Diagnostics.Runtime" Version="3.1.512801" />
     <PackageReference Include="Microsoft.ILVerification" Version="7.0.0-preview.4.22229.4" />
     <PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="2.2.0" />
     <PackageReference Include="Mono.Cecil" Version="0.11.4" />
@@ -72,10 +72,6 @@
     <ProjectReference Include="..\#external\Mobius.ILasm\Mobius.ILASM\Mobius.ILasm.csproj" />
     <ProjectReference Include="..\#external\SourcePath\Roslyn\Roslyn.csproj" />
     <ProjectReference Include="..\Runtime\Runtime.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="System.Net.Http" />
   </ItemGroup>
 
   <Target Name="CopyFrameworkXmlDocumentation" AfterTargets="ResolveReferences">
