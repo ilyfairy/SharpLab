@@ -259,8 +259,12 @@ public class JitAsmDecompiler : IDecompiler {
     }
 
     private ClrMethodData? FindJitCompiledMethod(ClrRuntime runtime, RuntimeMethodHandle handle) {
-        lock (runtime)
+        lock (runtime.DataTarget.DataReader) {
+            runtime.DataTarget.DataReader.FlushCachedData();
+        }
+        lock (runtime) {
             runtime.FlushCachedData();
+        }
 
         var methodDescAddress = unchecked((ulong)handle.Value.ToInt64());
         if (runtime.GetMethodByHandle(methodDescAddress) is not { } method) {
