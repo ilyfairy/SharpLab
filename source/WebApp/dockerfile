@@ -1,0 +1,13 @@
+﻿# dir: /source
+FROM node:22-alpine3.20 AS builder
+
+COPY "./WebApp" "/root/WebApp"
+COPY "./#external/mirrorsharp/WebAssets/dist" "/root/#external/mirrorsharp/WebAssets/dist"
+COPY "./#external/mirrorsharp-codemirror-6-preview/WebAssets/dist" "/root/#external/mirrorsharp-codemirror-6-preview/WebAssets/dist"
+
+WORKDIR "/root/WebApp"
+RUN rm -rf "node_modules" "package-lock.json"
+RUN npm install && rm -rf /root/.npm node_modules/prettier
+
+EXPOSE 44200
+ENTRYPOINT [ "npm", "run", "start" ]

@@ -1,0 +1,14 @@
+# dir: /
+FROM ubuntu:22.04
+
+COPY "./source/Container.Docker.Manager/bin/publish" "/root/Container.Docker.Manager"
+
+WORKDIR "/root/Container.Docker.Manager"
+RUN chmod +x "SharpLab.Container.Docker.Manager"
+
+ENV DOTNET_ROLL_FORWARD=LatestMajor
+ENV DOTNET_Urls="http://*:5000"
+
+EXPOSE 5000
+
+ENTRYPOINT [ "./SharpLab.Container.Docker.Manager" ]
