@@ -81,7 +81,7 @@ public class JitAsmDecompiler : IDecompiler {
     private void WriteJitInfo(ClrInfo clr, TextWriter writer) {
         writer.WriteLine(
             "; {0:G} CLR {1} on {2}",
-            clr.Flavor, clr.Version, clr.DataTarget.DataReader.Architecture.ToString("G").ToLowerInvariant()
+            clr.Flavor, clr.Version is not { Major: 0 or -1, Minor: 0 or -1, Build: 0 or -1, Revision: 0 or -1 } ? clr.Version : Environment.Version, clr.DataTarget.DataReader.Architecture.ToString("G").ToLowerInvariant()
         );
     }
 
@@ -259,8 +259,12 @@ public class JitAsmDecompiler : IDecompiler {
     }
 
     private ClrMethodData? FindJitCompiledMethod(ClrRuntime runtime, RuntimeMethodHandle handle) {
-        lock (runtime)
+        lock (runtime.DataTarget.DataReader) {
+            runtime.DataTarget.DataReader.FlushCachedData();
+        }
+        lock (runtime) {
             runtime.FlushCachedData();
+        }
 
         var methodDescAddress = unchecked((ulong)handle.Value.ToInt64());
         if (runtime.GetMethodByHandle(methodDescAddress) is not { } method) {

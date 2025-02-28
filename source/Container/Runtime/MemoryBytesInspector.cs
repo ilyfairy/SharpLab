@@ -46,6 +46,7 @@ internal class MemoryBytesInspector : IMemoryBytesInspector {
     public unsafe MemoryInspection InspectStack<T>(in T value) {
         using var runtimeLease = _runtimePool.GetOrCreate();
         var runtime = runtimeLease.Object;
+        runtime.DataTarget.DataReader.FlushCachedData();
 
         var type = typeof(T);
 
