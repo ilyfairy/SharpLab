@@ -1,6 +1,6 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
     <AssemblyName>SharpLab.Server</AssemblyName>
     <RootNamespace>SharpLab.Server</RootNamespace>
@@ -10,15 +10,16 @@
     <MSBuildWarningsAsMessages>MSB3836</MSBuildWarningsAsMessages>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <PreserveCompilationContext>true</PreserveCompilationContext>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="..\Native.Profiler\x64\$(Configuration)\SharpLab.Native.Profiler.dll" Link="SharpLab.Native.Profiler.dll" Condition="Exists('..\Native.Profiler\x64\$(Configuration)\SharpLab.Native.Profiler.dll')">
+    <!--<None Include="..\Native.Profiler\x64\$(Configuration)\SharpLab.Native.Profiler.dll" Link="SharpLab.Native.Profiler.dll" Condition="Exists('..\Native.Profiler\x64\$(Configuration)\SharpLab.Native.Profiler.dll')">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="..\Native.Profiler\x64\$(Configuration)\SharpLab.Native.Profiler.pdb" Link="SharpLab.Native.Profiler.pdb" Condition="Exists('..\Native.Profiler\x64\$(Configuration)\SharpLab.Native.Profiler.pdb')">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    </None>-->
     <None Include="..\WebApp.Server\.env" Link=".env" Condition="Exists('..\WebApp.Server\.env')">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -31,19 +32,17 @@
     <PackageReference Include="Autofac" Version="4.9.2" />
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="5.0.0" />
     <PackageReference Include="Autofac.Extras.FileSystemRegistration" Version="1.0.0-pre-03" />
-    <PackageReference Include="Azure.Identity" Version="1.13.1" />
+    <PackageReference Include="Azure.Identity" Version="1.13.2" />
     <PackageReference Include="Azure.Security.KeyVault.Secrets" Version="4.1.0" />
     <PackageReference Include="Azure.Storage.Blobs" Version="12.19.1" />
-    <PackageReference Include="ICSharpCode.Decompiler" Version="7.1.0.6543" />
+    <!--<PackageReference Include="FSharp.Compiler.Service" Version="43.9.201" />-->
+    <!--<PackageReference Include="FSharp.Core" Version="9.0.201" />-->
     <PackageReference Include="JetBrains.Annotations" Version="10.4.0" />
     <PackageReference Include="Microsoft.ApplicationInsights" Version="2.17.0" />
     <PackageReference Include="Microsoft.Azure.Cosmos.Table" Version="1.0.8" />
-    <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.12.0-3.final" />
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" Version="4.12.0-3.final" />
-    <PackageReference Include="Microsoft.CodeAnalysis.VisualBasic.Features" Version="4.12.0-3.final" />
-    <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="4.12.0-3.final" />
-    <PackageReference Include="Microsoft.Diagnostics.Runtime" Version="3.1.512801" />
-    <PackageReference Include="Microsoft.ILVerification" Version="7.0.0-preview.4.22229.4" />
+    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="9.0.2" />
+    <PackageReference Include="Microsoft.DiaSymReader" Version="2.0.0" />
+    <PackageReference Include="Microsoft.ILVerification" Version="9.0.0" />
     <PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="2.2.0" />
     <PackageReference Include="Mono.Cecil" Version="0.11.4" />
     <!--
@@ -56,26 +55,21 @@
     <PackageReference Include="SharpYaml" Version="1.6.2" />
     <PackageReference Include="System.Drawing.Common" Version="9.0.0" />
     <PackageReference Include="System.Formats.Nrbf" Version="9.0.0" />
-    <PackageReference Include="System.Memory" Version="4.5.5" />
+    <PackageReference Include="System.Memory" Version="4.6.0" />
     <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
     <!-- Avoids vulnerability in version referenced by other dependencies -->
     <PackageReference Include="System.Text.Json" Version="9.0.0" />
-    <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
+    <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.6.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\#external\ILSpy\ICSharpCode.Decompiler\ICSharpCode.Decompiler.csproj" />
     <ProjectReference Include="..\#external\mirrorsharp-codemirror-6-preview\AspNetCore\AspNetCore.csproj" />
     <ProjectReference Include="..\#external\mirrorsharp-codemirror-6-preview\Common\Common.csproj" />
-    <ProjectReference Include="..\#external\mirrorsharp-codemirror-6-preview\FSharp\FSharp.csproj" />
     <ProjectReference Include="..\#external\mirrorsharp-codemirror-6-preview\IL\IL.csproj" />
-    <ProjectReference Include="..\#external\mirrorsharp-codemirror-6-preview\VisualBasic\VisualBasic.csproj" />
     <ProjectReference Include="..\#external\Mobius.ILasm\Mobius.ILASM\Mobius.ILasm.csproj" />
-    <ProjectReference Include="..\#external\SourcePath\Roslyn\Roslyn.csproj" />
+    <ProjectReference Include="..\#external\SourcePath\Roslyn.ConstGenerics\Roslyn.ConstGenerics.csproj" />
     <ProjectReference Include="..\Runtime\Runtime.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="System.Net.Http" />
   </ItemGroup>
 
   <Target Name="CopyFrameworkXmlDocumentation" AfterTargets="ResolveReferences">
@@ -85,4 +79,29 @@
       </Content>
     </ItemGroup>
   </Target>
+
+  <ItemGroup>
+    <Reference Include="Microsoft.CodeAnalysis">
+      <HintPath>..\Libraries\Microsoft.CodeAnalysis.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CodeAnalysis.CSharp">
+      <HintPath>..\Libraries\Microsoft.CodeAnalysis.CSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CodeAnalysis.CSharp.Features">
+      <HintPath>..\Libraries\Microsoft.CodeAnalysis.CSharp.Features.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CodeAnalysis.CSharp.Workspaces">
+      <HintPath>..\Libraries\Microsoft.CodeAnalysis.CSharp.Workspaces.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CodeAnalysis.Features">
+      <HintPath>..\Libraries\Microsoft.CodeAnalysis.Features.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CodeAnalysis.Workspaces">
+      <HintPath>..\Libraries\Microsoft.CodeAnalysis.Workspaces.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reflection.Metadata">
+      <HintPath>..\Libraries\System.Reflection.Metadata.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>

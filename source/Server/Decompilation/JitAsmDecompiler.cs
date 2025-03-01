@@ -166,9 +166,9 @@ public class JitAsmDecompiler : IDecompiler {
     }
 
     private void DisassembleAndWriteMethod(JitWriteContext context, MethodBase method) {
-        #if DEBUG
+#if DEBUG
         DiagnosticLog.LogMessage($"[JitAsm] Processing method {method.Name}");
-        #endif
+#endif
 
         if ((method.MethodImplementationFlags & MethodImplAttributes.Runtime) == MethodImplAttributes.Runtime) {
             WriteSignatureFromReflection(context, method);
@@ -219,7 +219,7 @@ public class JitAsmDecompiler : IDecompiler {
         var clrMethodData = FindJitCompiledMethod(context.Runtime, method.MethodHandle);
 
         var writer = context.Writer;
-        if (clrMethodData?.Signature is {} signature) {
+        if (clrMethodData?.Signature is { } signature) {
             writer.WriteLine();
             writer.WriteLine(signature);
         }
@@ -268,30 +268,30 @@ public class JitAsmDecompiler : IDecompiler {
 
         var methodDescAddress = unchecked((ulong)handle.Value.ToInt64());
         if (runtime.GetMethodByHandle(methodDescAddress) is not { } method) {
-            #if DEBUG
+#if DEBUG
             DiagnosticLog.LogMessage($"[JitAsm] Failed to GetMethodByHandle(0x{methodDescAddress:X}).");
-            #endif
+#endif
             return null;
         }
 
         if (method.CompilationType == MethodCompilationType.None) {
-            #if DEBUG
+#if DEBUG
             DiagnosticLog.LogMessage($"[JitAsm] Method {method.Signature} compilation type is None.");
-            #endif
+#endif
             return null;
         }
 
         if (method.NativeCode == 0) {
-            #if DEBUG
+#if DEBUG
             DiagnosticLog.LogMessage($"[JitAsm] Method {method.Signature} native code is 0.");
-            #endif
+#endif
             return null;
         }
 
         if (method.HotColdInfo.HotSize == 0) {
-            #if DEBUG
+#if DEBUG
             DiagnosticLog.LogMessage($"[JitAsm] Method {method.Signature} hot size is 0.");
-            #endif
+#endif
             return null;
         }
 
@@ -341,8 +341,7 @@ public class JitAsmDecompiler : IDecompiler {
     }
 
     private TMember ApplyJitGenericAttribute<TMember>(TMember definition, Type[] arguments, Func<TMember, Type[], TMember> makeGeneric)
-        where TMember : MemberInfo
-    {
+        where TMember : MemberInfo {
         try {
             return makeGeneric(definition, arguments);
         }
@@ -351,14 +350,13 @@ public class JitAsmDecompiler : IDecompiler {
         }
         catch (Exception ex) when (
             ex is BadImageFormatException or TypeLoadException
-            && arguments.FirstOrDefault(static a => a.IsByRefLike) is {} refStructArgument
+            && arguments.FirstOrDefault(static a => a.IsByRefLike) is { } refStructArgument
         ) {
             throw new JitGenericAttributeException($"JitGenericAttribute argument {refStructArgument.Name} is a ref struct, which is not supported in generics.", ex);
         }
     }
 
-    private int MapArchitectureToBitness(Architecture architecture) => architecture switch
-    {
+    private int MapArchitectureToBitness(Architecture architecture) => architecture switch {
         Architecture.X64 => 64,
         Architecture.X86 => 32,
         _ => throw new Exception($"Unsupported architecture {architecture}.")
@@ -369,7 +367,7 @@ public class JitAsmDecompiler : IDecompiler {
             Writer = writer;
             Runtime = runtime;
         }
-        
+
         public TextWriter Writer { get; }
         public ClrRuntime Runtime { get; }
     }

@@ -4,12 +4,10 @@ using System.IO;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using FSharp.Compiler.Diagnostics;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Emit;
 using Microsoft.IO;
 using MirrorSharp.Advanced;
-using MirrorSharp.FSharp.Advanced;
 using MirrorSharp.IL.Advanced;
 using MirrorSharp.IL.Internal;
 using Mobius.ILasm.Core;
@@ -35,9 +33,8 @@ public class Compiler : ICompiler {
         IList<Diagnostic> diagnostics,
         CancellationToken cancellationToken
     ) {
-        if (session.IsFSharp()) {
-            var compiled = await TryCompileFSharpToStreamAsync(assemblyStream, session, diagnostics, cancellationToken).ConfigureAwait(false);
-            return (compiled, false);
+        if (session.LanguageName != LanguageNames.CSharp) {
+            return (false, false);
         }
 
         if (session.IsIL()) {
@@ -57,25 +54,6 @@ public class Compiler : ICompiler {
         }
 
         return (true, true);
-    }
-
-    private async ValueTask<bool> TryCompileFSharpToStreamAsync(
-        MemoryStream assemblyStream,
-        IWorkSession session,
-        IList<Diagnostic> diagnostics,
-        CancellationToken cancellationToken
-    ) {
-        var fsharp = session.FSharp();
-        var compiled = await fsharp.CompileAsync(assemblyStream, cancellationToken)
-            .ConfigureAwait(false);
-
-        foreach (var diagnostic in compiled.Item1) {
-            // no reason to add warnings as check would have added them anyways
-            if (diagnostic.Severity.Tag == FSharpDiagnosticSeverity.Tags.Error)
-                diagnostics.Add(fsharp.ConvertToDiagnostic(diagnostic));
-        }
-
-        return assemblyStream.Length > 0;
     }
 
     private static readonly DriverSettings ILDriverSettings = new() {

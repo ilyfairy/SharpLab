@@ -24,16 +24,16 @@ namespace SharpLab.Server.Execution {
             Argument.NotNull(nameof(streams), streams);
             Argument.NotNull(nameof(session), session);
 
-            using var rewritten = _rewriterComposer.Rewrite(streams, session);
+            //using var rewritten = _rewriterComposer.Rewrite(streams, session);
 
             var includePerformance = session.ShouldReportPerformance();
             var executeStopwatch = includePerformance ? Stopwatch.StartNew() : null;
-            var result = await _client.ExecuteAsync(session.GetSessionId(), rewritten.Stream, includePerformance, cancellationToken);
+            var result = await _client.ExecuteAsync(session.GetSessionId(), streams.AssemblyStream, includePerformance, cancellationToken);
             
-            if (rewritten.ElapsedTime != null && executeStopwatch != null) {
-                // TODO: Prettify
-                // output += $"\n  REWRITERS: {rewriteStopwatch.ElapsedMilliseconds,17}ms\n  CONTAINER EXECUTOR: {executeStopwatch.ElapsedMilliseconds,8}ms";
-            }
+            //if (rewritten.ElapsedTime != null && executeStopwatch != null) {
+            //    // TODO: Prettify
+            //    // output += $"\n  REWRITERS: {rewriteStopwatch.ElapsedMilliseconds,17}ms\n  CONTAINER EXECUTOR: {executeStopwatch.ElapsedMilliseconds,8}ms";
+            //}
             return result;
         }
     }

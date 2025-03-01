@@ -41,14 +41,6 @@ public class CommonModule : Module {
                .As<ICSharpTopLevelProgramSupport>()
                .SingleInstance();
 
-        builder.RegisterType<VisualBasicAdapter>()
-               .As<ILanguageAdapter>()
-               .SingleInstance();
-
-        builder.RegisterType<FSharpAdapter>()
-               .As<ILanguageAdapter>()
-               .SingleInstance();
-
         builder.RegisterType<ILAdapter>()
             .As<ILanguageAdapter>()
             .SingleInstance();

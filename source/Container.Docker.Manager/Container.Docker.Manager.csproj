@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <InvariantGlobalization>true</InvariantGlobalization>
+    <AssemblyName>SharpLab.Container.Docker.Manager</AssemblyName>
+    <RootNamespace>SharpLab.Container.Docker.Manager</RootNamespace>
+    <RollForwared>LatestMajor</RollForwared>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Docker.DotNet" Version="3.125.15" />
+    <PackageReference Include="protobuf-net" Version="3.0.101" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="../Container/Protocol/Stdin/ExecuteCommand.cs" />
+    <Compile Include="../Container/Protocol/Stdin/StdinCommand.cs" />
+    <Compile Include="../Container.Manager/Internal/ExecutionOutputResult.cs" />
+    <Compile Include="../Container.Manager/Internal/FailureMessages.cs" />
+    <Compile Include="../Container.Manager/Internal/StdoutReader.cs" />
+  </ItemGroup>
+
+</Project>

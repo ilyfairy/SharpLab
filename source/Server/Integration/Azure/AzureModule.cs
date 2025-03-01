@@ -36,7 +36,9 @@ public class AzureModule : Module {
         builder
             .Register(c => {
                 var connectionString = c.Resolve<ISecretsClient>().GetSecret("PublicStorageConnectionString");
-                return new BlobContainerClient(connectionString, "cache");
+                var blobContainerClient = new BlobContainerClient(connectionString, "cache");
+                blobContainerClient.CreateIfNotExists();
+                return blobContainerClient;
             })
             .Named<BlobContainerClient>(cacheClientName)
             .SingleInstance();

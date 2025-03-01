@@ -8,9 +8,9 @@ using SharpLab.Server.Common.Diagnostics;
 
 namespace SharpLab.Server.Common {
     public class PreCachedAssemblyResolver : ICSharpCode.Decompiler.Metadata.IAssemblyResolver, Mono.Cecil.IAssemblyResolver {
-        private static readonly Task<PEFile?> NullFileTask = Task.FromResult((PEFile?)null);
+        private static readonly Task<MetadataFile?> NullFileTask = Task.FromResult((MetadataFile?)null);
 
-        private readonly ConcurrentDictionary<string, (PEFile file, Task<PEFile> task)> _peFileCache = new();
+        private readonly ConcurrentDictionary<string, (MetadataFile file, Task<MetadataFile> task)> _peFileCache = new();
         private readonly ConcurrentDictionary<string, AssemblyDefinition> _cecilCache = new();
 
         public PreCachedAssemblyResolver(IReadOnlyCollection<ILanguageAdapter> languages) {
@@ -23,7 +23,7 @@ namespace SharpLab.Server.Common {
             PerformanceLog.Checkpoint("PreCachedAssemblyResolver.AddToCaches.Start");
             foreach (var path in assemblyPaths) {
                 var file = new PEFile(path);
-                _peFileCache.TryAdd(file.Name, (file, Task.FromResult(file)));
+                _peFileCache.TryAdd(file.Name, (file, Task.FromResult<MetadataFile>(file)));
 
                 var definition = AssemblyDefinition.ReadAssembly(path);
                 _cecilCache.TryAdd(definition.Name.Name, definition);
@@ -31,19 +31,19 @@ namespace SharpLab.Server.Common {
             PerformanceLog.Checkpoint("PreCachedAssemblyResolver.AddToCaches.End");
         }
 
-        public PEFile? Resolve(IAssemblyReference reference) {
+        public MetadataFile? Resolve(IAssemblyReference reference) {
             return ResolveFromCacheForDecompilation(reference).file;
         }
 
-        public Task<PEFile?> ResolveAsync(IAssemblyReference reference) {
+        public Task<MetadataFile?> ResolveAsync(IAssemblyReference reference) {
             return ResolveFromCacheForDecompilation(reference).task;
         }
 
-        public PEFile ResolveModule(PEFile mainModule, string moduleName) {
+        public MetadataFile ResolveModule(MetadataFile mainModule, string moduleName) {
             throw new NotSupportedException();
         }
 
-        public Task<PEFile?> ResolveModuleAsync(PEFile mainModule, string moduleName) {
+        public Task<MetadataFile?> ResolveModuleAsync(MetadataFile mainModule, string moduleName) {
             throw new NotSupportedException();
         }
 
@@ -55,7 +55,7 @@ namespace SharpLab.Server.Common {
             throw new NotSupportedException();
         }
 
-        private (PEFile? file, Task<PEFile?> task) ResolveFromCacheForDecompilation(IAssemblyReference reference) {
+        private (MetadataFile? file, Task<MetadataFile?> task) ResolveFromCacheForDecompilation(IAssemblyReference reference) {
             // It is OK to _not_ find the assembly for decompilation, as e.g. in IL we can reference arbitrary assemblies
             if (!_peFileCache.TryGetValue(reference.Name, out var cached))
                 return (null, NullFileTask);
@@ -69,7 +69,7 @@ namespace SharpLab.Server.Common {
             return assembly;
         }
 
-        private Task<PEFile?> ResultAsNullable(Task<PEFile> task) => (Task<PEFile?>)(object)task;
+        private Task<MetadataFile?> ResultAsNullable(Task<MetadataFile> task) => (Task<MetadataFile?>)(object)task;
 
         public void Dispose() {
         }

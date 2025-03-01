@@ -14,7 +14,6 @@ namespace SharpLab.Server.Decompilation.Internal {
         // ReSharper disable HeapView.ObjectAllocation.Evident
         private static readonly IReadOnlyDictionary<int, string> KindNames = new[] {
             typeof(Microsoft.CodeAnalysis.CSharp.SyntaxKind),
-            typeof(Microsoft.CodeAnalysis.VisualBasic.SyntaxKind),
         }.SelectMany(t => Enum.GetValues(t).Cast<Enum>())
          .Select(e => (name: e.ToString("G"), value: ((IConvertible)e).ToInt32(null)))
          .Distinct()

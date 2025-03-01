@@ -1,0 +1,38 @@
+# dir: /
+FROM ubuntu:22.04 AS builder
+
+RUN apt-get update && apt-get install -y wget && apt-get clean -y
+
+WORKDIR /root
+RUN mkdir .dotnet
+
+COPY "./source/WebApp.Server/const-generics.net9.0-linux-Release-x64.tar.gz" "/root"
+RUN tar -zxvf "const-generics.net9.0-linux-Release-x64.tar.gz" -C ".dotnet" && \
+    rm "const-generics.net9.0-linux-Release-x64.tar.gz"
+
+RUN wget https://dot.net/v1/dotnet-install.sh && chmod +x dotnet-install.sh && mkdir temp_dotnet && \
+    ./dotnet-install.sh --runtime aspnetcore --version 8.0.0 --install-dir /root/temp_dotnet --skip-non-versioned-files && \
+    rm dotnet-install.sh && \
+    cp -r /root/temp_dotnet/shared/Microsoft.AspNetCore.App /root/.dotnet/shared/Microsoft.AspNetCore.App && \
+    rm -rf /root/temp_dotnet
+
+COPY "./source/WebApp.Server/bin/publish" "/root/WebApp.Server/"
+WORKDIR /root/WebApp.Server/
+RUN rm -rf .env System.Reflection.Metadata.dll
+RUN cp /root/.dotnet/shared/Microsoft.NETCore.App/8.0.0/System.Reflection.Metadata.dll .
+
+
+FROM ubuntu:22.04
+COPY --from=builder /root /root
+WORKDIR /root/WebApp.Server/
+
+ENV DOTNET_ROOT="/root/.dotnet"
+ENV PATH="$PATH:/root/.dotnet"
+
+ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1
+ENV DOTNET_ROLL_FORWARD=LatestMajor
+ENV DOTNET_Urls=http://*:5000
+
+EXPOSE 5000
+
+ENTRYPOINT [ "dotnet", "SharpLab.WebApp.Server.dll" ]

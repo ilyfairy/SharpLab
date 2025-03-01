@@ -66,5 +66,10 @@ namespace SharpLab.Server.Decompilation.Internal {
         public void Dispose() {
             _readerProvider.Dispose();
         }
+
+        public bool TryGetExtraTypeInfo(MethodDefinitionHandle method, int index, out PdbExtraTypeInfo extraTypeInfo) {
+            extraTypeInfo = default;
+            return false;
+        }
     }
 }
