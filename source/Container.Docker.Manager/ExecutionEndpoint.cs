@@ -46,7 +46,7 @@ public class ExecutionEndpoint {
         var includePerformance = context.Request.Headers["SL-Debug-Performance"].Count > 0;
 
         try {
-            _logger.LogInformation("create container {ContainerName}", containerName);
+            _logger.LogInformation("create {ImageName}: {ContainerName}", _containerOptions.DockerImageName, containerName);
             var container = await _docker.Containers.CreateContainerAsync(new CreateContainerParameters() {
                 Name = containerName,
                 Image = _containerOptions.DockerImageName,
