@@ -1,22 +1,28 @@
-﻿# dir: /
+# dir: /
 FROM ubuntu:22.04 AS builder
 
-RUN apt-get update && apt-get install -y wget libicu-dev && apt-get clean -y
+RUN apt-get update && apt-get install -y wget && apt-get clean -y
 
 WORKDIR /root
-RUN mkdir -p .dotnet
+RUN mkdir .dotnet
 RUN wget "https://aka.ms/dotnet/10.0.1xx-preview2/daily/dotnet-sdk-linux-x64.tar.gz" -O "dotnet-sdk.tar.gz" && \
     tar -zxvf "dotnet-sdk.tar.gz" -C ".dotnet" && \
     rm -rf "dotnet-sdk.tar.gz" .dotnet/sdk .dotnet/packs .dotnet/templates .dotnet/template-packs .dotnet/sdk-manifests .dotnet/library-packs
 
 COPY "./source/WebApp.Server/bin/publish" "/root/WebApp.Server"
 
-WORKDIR "/root/WebApp.Server/"
-RUN rm .env
+WORKDIR /root/WebApp.Server
+RUN rm -rf .env *.pdb
 
+
+FROM ubuntu:22.04
+COPY --from=builder /root /root
+
+WORKDIR /root/WebApp.Server
 ENV DOTNET_ROOT="/root/.dotnet"
 ENV PATH="$PATH:/root/.dotnet"
 
+ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1
 ENV DOTNET_ROLL_FORWARD=LatestMajor
 ENV DOTNET_Urls=http://*:5000
 

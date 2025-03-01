@@ -7,7 +7,8 @@ WORKDIR /root
 RUN wget "https://aka.ms/dotnet/10.0.1xx-preview2/daily/dotnet-sdk-linux-x64.tar.gz" -O "dotnet-sdk.tar.gz" && \
     mkdir -p .dotnet && \
     tar -zxvf "dotnet-sdk.tar.gz" -C ".dotnet" && \
-    rm -rf "dotnet-sdk.tar.gz" .dotnet/sdk .dotnet/packs .dotnet/templates .dotnet/template-packs .dotnet/sdk-manifests .dotnet/library-packs
+    rm -rf "dotnet-sdk.tar.gz" .dotnet/sdk .dotnet/packs .dotnet/templates .dotnet/template-packs .dotnet/sdk-manifests .dotnet/library-packs && \
+    rm -rf ".dotnet/shared/Microsoft.AspNetCore.App"
 
 COPY "./source/Container/bin/publish" "/root/Container"
 
@@ -16,6 +17,7 @@ WORKDIR /root/Container
 ENV DOTNET_ROOT="/root/.dotnet"
 ENV PATH="$PATH:/root/.dotnet"
 
+ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1
 ENV DOTNET_ROLL_FORWARD=LatestMajor
 
 ENTRYPOINT [ "dotnet", "/root/Container/SharpLab.Container.dll" ]
