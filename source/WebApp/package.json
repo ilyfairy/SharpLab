@@ -113,6 +113,7 @@
   "dependencies": {
     "@fontsource/open-sans": "4.5.10",
     "@fontsource/roboto-condensed": "4.5.8",
+    "ansi_up": "6.0.5",
     "array.prototype.grouptomap": "1.1.1",
     "base64-arraybuffer": "1.0.1",
     "codemirror": "5.61.1",

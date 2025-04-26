@@ -5,6 +5,9 @@ import { SimpleOutput } from './internal/SimpleOutput';
 import { MemoryOutput } from './internal/MemoryOutput';
 import { MemoryGraphOutput } from './internal/MemoryGraphOutput';
 import { GroupOutput, InspectionGroup } from './internal/GroupOutput';
+import { AnsiUp } from "ansi_up";
+
+const ansi_up = new AnsiUp();
 
 type Props = {
     output: ReadonlyArray<OutputItem|InspectionGroup>;
@@ -14,9 +17,12 @@ type Props = {
 };
 
 export const OutputView: React.FC<Props> = ({ output }) => {
-    const renderItem = (item: OutputItem|InspectionGroup, index: number) => {
+    const renderItem = (item: OutputItem | InspectionGroup, index: number) => {
         if (typeof item === 'string')
-            return <pre key={index}>{item}</pre>;
+        {
+            const ansiHtml = ansi_up.ansi_to_html(item);
+            return (<pre key={index} dangerouslySetInnerHTML={{ __html: ansiHtml }}></pre>);
+        }
 
         switch (item.type) {
             case 'inspection:simple': return <SimpleOutput key={index} inspection={item} />;
