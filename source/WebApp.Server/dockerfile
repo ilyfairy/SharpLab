@@ -5,7 +5,7 @@ RUN apt-get update && apt-get install -y wget && apt-get clean -y
 
 WORKDIR /root
 RUN mkdir .dotnet
-RUN wget "https://aka.ms/dotnet/10.0.1xx-preview2/daily/dotnet-sdk-linux-x64.tar.gz" -O "dotnet-sdk.tar.gz" && \
+RUN wget "https://aka.ms/dotnet/10.0.1xx/daily/dotnet-sdk-linux-x64.tar.gz" -O "dotnet-sdk.tar.gz" && \
     tar -zxvf "dotnet-sdk.tar.gz" -C ".dotnet" && \
     rm -rf "dotnet-sdk.tar.gz" .dotnet/sdk .dotnet/packs .dotnet/templates .dotnet/template-packs .dotnet/sdk-manifests .dotnet/library-packs
 
